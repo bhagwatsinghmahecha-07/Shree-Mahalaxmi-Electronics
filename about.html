@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | Shree Mahalaxmi Electricals</title>
+<meta name="description" content="The story of Shree Mahalaxmi Electricals, Kalaburagi — serving the community since 2007.">
+<link rel="canonical" href="https://shreemahalaxmielectricals.in/about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1815; --ink-soft:#2b2724; --copper:#c1652f; --copper-bright:#d97a43;
+    --slate:#3e5a68; --earth:#4c7a3d; --porcelain:#f5f1e6; --porcelain-dim:#ece5d4;
+    --brass:#d9a441; --line:#dcd3bd; --display:'Space Grotesk',sans-serif;
+    --body:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--body); background:var(--porcelain); color:var(--ink); line-height:1.6;}
+  a{color:inherit;}
+
+  .wire-divider{height:6px; width:100%; display:flex; gap:3px;}
+  .wire-divider span{flex:1; height:100%;}
+  .wire-divider .w1{background:var(--copper);}
+  .wire-divider .w2{background:var(--slate);}
+  .wire-divider .w3{background:var(--earth);}
+
+  header{background:var(--ink); color:var(--porcelain);}
+  .nav-inner{
+    max-width:1180px; margin:0 auto; padding:16px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+  }
+  .logo{font-family:var(--display); font-weight:700; font-size:1.2rem; text-decoration:none; display:flex; align-items:center; gap:8px;}
+  .logo .bolt{color:var(--brass);}
+  .back-link{
+    color:var(--porcelain-dim); text-decoration:none; font-size:0.88rem; font-weight:600;
+    border:1px solid rgba(245,241,230,0.25); padding:8px 14px; border-radius:6px; white-space:nowrap;
+  }
+  .back-link:hover{color:var(--porcelain); border-color:var(--porcelain);}
+
+  /* ---------- hero ---------- */
+  .about-hero{
+    background:linear-gradient(180deg, var(--ink) 0%, #241f1a 100%); color:var(--porcelain);
+    padding:56px 24px 64px; text-align:center;
+  }
+  .about-hero-inner{max-width:720px; margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono); font-size:0.78rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--brass); margin-bottom:14px;
+  }
+  .about-hero h1{font-family:var(--display); font-size:2.1rem; margin-bottom:16px; line-height:1.25;}
+  .about-hero p{color:#c9c3b3; font-size:1.02rem; max-width:560px; margin:0 auto;}
+  .est-badge{
+    display:inline-flex; align-items:center; gap:8px; margin-top:24px; background:rgba(217,164,65,0.14);
+    border:1px solid rgba(217,164,65,0.35); color:var(--brass); font-family:var(--mono);
+    font-size:0.8rem; padding:8px 18px; border-radius:30px; font-weight:600; letter-spacing:0.03em;
+  }
+
+  main{max-width:900px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- story section ---------- */
+  .story{padding:56px 0 8px;}
+  .story h2{font-family:var(--display); font-size:1.5rem; margin-bottom:18px;}
+  .story p{color:#4a453d; font-size:0.98rem; margin-bottom:16px; max-width:720px;}
+  .story p strong{color:var(--ink);}
+
+  .founder-strip{
+    display:flex; align-items:center; gap:18px; background:#fff; border:1px solid var(--line);
+    border-radius:12px; padding:20px 24px; margin:28px 0 8px; box-shadow:0 2px 10px rgba(26,24,21,0.05);
+  }
+  .founder-strip + .founder-strip{margin-top:14px;}
+  .founder-avatar{
+    width:88px; height:88px; border-radius:50%; background:var(--porcelain-dim); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-family:var(--display);
+    font-weight:700; font-size:1.3rem; color:var(--copper); border:2px solid var(--copper);
+    overflow:hidden;
+  }
+  .founder-avatar img{width:100%; height:100%; object-fit:cover; object-position:top center;}
+  .founder-strip h4{font-family:var(--display); font-size:1rem; margin-bottom:3px;}
+  .founder-strip p{margin:0; color:#6b6558; font-size:0.86rem;}
+
+  /* ---------- value cards ---------- */
+  .values{padding:44px 0; display:grid; grid-template-columns:repeat(3, 1fr); gap:18px;}
+  .value-card{
+    background:#fff; border:1px solid var(--line); border-radius:12px; padding:24px 20px;
+    text-align:center; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .value-card:hover{transform:translateY(-3px); box-shadow:0 10px 24px rgba(26,24,21,0.08);}
+  .value-card .vi{
+    width:46px; height:46px; margin:0 auto 14px; border-radius:50%; background:var(--porcelain-dim);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .value-card svg{width:22px; height:22px; stroke:var(--copper); fill:none; stroke-width:1.6;}
+  .value-card h4{font-family:var(--display); font-size:0.98rem; margin-bottom:6px;}
+  .value-card p{color:#6b6558; font-size:0.85rem;}
+
+  /* ---------- awards & recognition ---------- */
+  .awards-section{padding:12px 0 44px;}
+  .awards-section .section-lead{margin-bottom:24px;}
+  .awards-section h2{font-family:var(--display); font-size:1.5rem; margin-bottom:8px;}
+  .awards-section .section-lead p{color:#6b6558; font-size:0.92rem; max-width:640px;}
+
+  .awards-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); grid-auto-rows:170px; gap:12px;
+  }
+  .awards-grid .a-tall{grid-row:span 2;}
+  .award-item{
+    position:relative; border-radius:12px; overflow:hidden; background:#fff;
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 8px rgba(26,24,21,0.04);
+  }
+  .award-item img{width:100%; height:100%; display:block; transition:transform .3s ease;}
+  .award-item.cover img{object-fit:cover; object-position:center;}
+  .award-item.contain img{object-fit:contain; object-position:center; padding:10px; background:#fff;}
+  .award-item:hover img{transform:scale(1.04);}
+  .award-caption{
+    position:absolute; bottom:0; left:0; right:0; padding:10px 12px 8px;
+    background:linear-gradient(0deg, rgba(26,24,21,0.78), transparent);
+    color:#fff; font-size:0.76rem; font-weight:600; opacity:0; transition:opacity .2s ease;
+  }
+  .award-item.contain .award-caption{
+    background:linear-gradient(0deg, rgba(26,24,21,0.85), transparent);
+  }
+  .award-item:hover .award-caption{opacity:1;}
+
+  .closing-line{
+    text-align:center; padding:0 0 60px; font-family:var(--display); font-size:1.15rem;
+    color:var(--ink); max-width:600px; margin:0 auto;
+  }
+  .closing-line span{color:var(--copper);}
+
+  footer{background:var(--ink); color:#a39d8e; padding:28px 24px; text-align:center; font-size:0.85rem;}
+  footer a{color:var(--porcelain-dim); text-decoration:none; font-weight:600;}
+  footer a:hover{color:var(--porcelain);}
+
+  @media (max-width: 720px){
+    .about-hero{padding:44px 20px 48px;}
+    .about-hero h1{font-size:1.6rem;}
+    .values{grid-template-columns:1fr; gap:14px;}
+    .awards-grid{grid-template-columns:repeat(2, 1fr); grid-auto-rows:140px;}
+    .founder-strip{flex-direction:column; text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="bolt">⚡</span> Shree Mahalaxmi Electricals</a>
+    <a class="back-link" href="index.html">← Back to Shop</a>
+  </div>
+</header>
+<div class="wire-divider"><span class="w1"></span><span class="w2"></span><span class="w3"></span></div>
+
+<section class="about-hero">
+  <div class="about-hero-inner">
+    <div class="eyebrow">Our Story</div>
+    <h1>Built on trust, wired with pride.</h1>
+    <p>What started as one family's commitment to honest electrical supply has grown into Kalaburagi's trusted name for the products that keep every home and business running.</p>
+    <div class="est-badge">⚡ Established 29th November 2007</div>
+  </div>
+</section>
+
+<main>
+  <section class="story">
+    <h2>Nearly two decades of powering homes</h2>
+    <p>Shree Mahalaxmi Electricals was incorporated on <strong>29th November 2007</strong>, and for close to two decades since, we've been proud to serve the people of Kalaburagi with genuine, ISI-marked electrical products — from geysers and wires to switches, fans, MCBs, and lighting.</p>
+    <p>What hasn't changed in all these years is why we started: a belief that every customer, whether a homeowner rewiring a single room or an electrician stocking up for ten sites, deserves the same honesty, the same quality, and the same care.</p>
+    <p>Every product on our shelves is chosen the way we'd choose it for our own home — because in a business built on wires and current, trust is the one thing that can never be cut short.</p>
+
+    <div class="founder-strip">
+      <div class="founder-avatar"><img src="images/founder-viramsingh.jpg" alt="Viram Singh Khichi, Founder of Shree Mahalaxmi Electricals"></div>
+      <div>
+        <h4>Viram Singh Khichi</h4>
+        <p>Founder &amp; Owner, Shree Mahalaxmi Electricals</p>
+      </div>
+    </div>
+    <div class="founder-strip">
+      <div class="founder-avatar"><img src="images/operations-manager-vanepal.jpg" alt="Vanepal Singh Khichi, Operations Manager at Shree Mahalaxmi Electricals" style="object-position:top center;"></div>
+      <div>
+        <h4>Vanepal Singh Khichi</h4>
+        <p>Operations Manager — oversees all daily operations at Shree Mahalaxmi Electricals</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="values">
+    <div class="value-card">
+      <div class="vi"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg></div>
+      <h4>Trust, First</h4>
+      <p>Every product is genuine and ISI-marked — no shortcuts, ever.</p>
+    </div>
+    <div class="value-card">
+      <div class="vi"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+      <h4>Years of Experience</h4>
+      <p>Serving Kalaburagi since 2007 — knowledge earned the honest way.</p>
+    </div>
+    <div class="value-card">
+      <div class="vi"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div>
+      <h4>Family-Owned</h4>
+      <p>A family business, run with the personal care that only ownership brings.</p>
+    </div>
+  </section>
+
+  <section class="awards-section">
+    <div class="section-lead">
+      <h2>Awards &amp; Recognition</h2>
+      <p>Recognised over the years by V-Guard and GreatWhite Electricals for our partnership, commitment, and years of authorised dealership.</p>
+    </div>
+    <div class="awards-grid">
+      <div class="award-item contain a-tall">
+        <img src="images/award-elegance-club-trophy.jpg" alt="V-Guard Fans Elegance Club Award trophy, Bangkok 2025">
+        <div class="award-caption">V-Guard Fans Elegance Club Award — Bangkok</div>
+      </div>
+      <div class="award-item contain">
+        <img src="images/cert-vguard-2025-2028.jpg" alt="V-Guard Certificate of Dealership 2025-2028">
+        <div class="award-caption">V-Guard Certificate of Dealership</div>
+      </div>
+      <div class="award-item contain">
+        <img src="images/cert-greatwhite-50years.jpg" alt="GreatWhite Electricals Dealership Certificate">
+        <div class="award-caption">GreatWhite Electricals Dealership Certificate</div>
+      </div>
+      <div class="award-item cover">
+        <img src="images/award-ceremony-bangkok.jpg" alt="V-Guard Fans Elegance Club Award ceremony, Bangkok">
+        <div class="award-caption">Award Ceremony — Bangkok, Nov '25</div>
+      </div>
+      <div class="award-item contain">
+        <img src="images/award-greatwhite-12years-trophy.jpg" alt="GreatWhite Electricals 12 Years Trophy">
+        <div class="award-caption">GreatWhite Electricals — 12 Years &amp; Counting</div>
+      </div>
+      <div class="award-item cover a-tall">
+        <img src="images/team-vguard-event.jpg" alt="Team at V-Guard dealer event">
+        <div class="award-caption">With the V-Guard Team</div>
+      </div>
+      <div class="award-item cover">
+        <img src="images/thankyou-plaque-vguard.jpg" alt="V-Guard Thank You plaque to Viramsingh D Khichi">
+        <div class="award-caption">A Note of Thanks from V-Guard</div>
+      </div>
+      <div class="award-item contain">
+        <img src="images/award-dealers-conference-goa.jpg" alt="V-Guard Dealers Conference Goa 2019 trophy">
+        <div class="award-caption">V-Guard Dealers Conference — Goa '19</div>
+      </div>
+      <div class="award-item contain">
+        <img src="images/felicitation-ceremony.jpg" alt="Viram Singh Khichi being felicitated at a dealer event">
+        <div class="award-caption">Felicitated at Dealer Meet</div>
+      </div>
+    </div>
+  </section>
+
+  <p class="closing-line">From <span>2007</span> to today — same shop, same trust, same family standing behind every product we sell.</p>
+</main>
+
+<footer>
+  <p>© 2026 Shree Mahalaxmi Electricals &nbsp;·&nbsp; <a href="return-policy.html">Return &amp; Exchange Policy</a> &nbsp;·&nbsp; <a href="privacy-policy.html">Privacy Policy</a></p>
+</footer>
+
+</body>
+</html>

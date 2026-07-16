@@ -1,0 +1,3 @@
+[build]
+  command = "node prerender-products.js"
+  publish = "."

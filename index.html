@@ -1334,6 +1334,9 @@ function renderCategories(){
     el.addEventListener('click', () => {
       const cat = el.dataset.cat;
       activeCategory = activeCategory === cat ? null : cat;
+      searchTerm = "";
+      document.getElementById('searchInput').value = "";
+      document.getElementById('mobileSearchInput').value = "";
       renderCategories();
       renderProducts();
     });
@@ -1345,13 +1348,14 @@ function renderProducts(){
   let list = products;
   if(activeCategory) list = list.filter(p => p.cat === activeCategory);
   if(searchTerm){
-    const term = searchTerm.toLowerCase().trim();
+    const words = searchTerm.toLowerCase().trim().split(/\s+/).filter(Boolean);
     list = list.filter(p => {
-      if(p.name.toLowerCase().includes(term)) return true;
       const cat = categories.find(c => c.id === p.cat);
-      if(!cat) return false;
-      const catName = cat.name.replace(/&amp;/g, '&').toLowerCase();
-      return catName.includes(term) || cat.id.toLowerCase().includes(term);
+      const catName = cat ? cat.name.replace(/&amp;/g, '&').toLowerCase() : '';
+      const catId = cat ? cat.id.toLowerCase() : '';
+      const haystack = [p.name, p.tag, catName, catId].filter(Boolean).join(' ').toLowerCase();
+      // every typed word must appear somewhere in name/tag/category — order and position don't matter
+      return words.every(w => haystack.includes(w));
     });
   }
 

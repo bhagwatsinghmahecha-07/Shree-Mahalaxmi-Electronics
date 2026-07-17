@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — Shree Mahalaxmi Electricals</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1815; --ink-soft:#2b2724; --copper:#c1652f; --copper-bright:#d97a43;
+    --slate:#3e5a68; --earth:#4c7a3d; --porcelain:#f5f1e6; --porcelain-dim:#ece5d4;
+    --brass:#d9a441; --line:#dcd3bd; --display:'Space Grotesk',sans-serif;
+    --body:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:var(--body); background:var(--porcelain); color:var(--ink); line-height:1.5;}
+  header{background:var(--ink); color:var(--porcelain); padding:18px 24px; display:flex; align-items:center; justify-content:space-between;}
+  header h1{font-family:var(--display); font-size:1.2rem; font-weight:700;}
+  header button{background:var(--copper); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:600; font-size:0.85rem; cursor:pointer;}
+  header button:hover{background:var(--copper-bright);}
+  main{max-width:1200px; margin:0 auto; padding:32px 20px;}
+
+  .card{background:#fff; border:1px solid var(--line); border-radius:10px; padding:28px; max-width:380px; margin:60px auto;}
+  .card h2{font-family:var(--display); margin-bottom:6px;}
+  .card p{color:#8a8272; font-size:0.9rem; margin-bottom:20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:0.8rem; font-weight:600; margin-bottom:5px;}
+  .field input{width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font-family:var(--body); font-size:0.9rem;}
+  .btn{width:100%; background:var(--ink); color:#fff; border:none; padding:12px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.9rem; margin-top:6px;}
+  .btn:hover{background:var(--ink-soft);}
+  .btn:disabled{opacity:0.6; cursor:not-allowed;}
+  .msg{font-size:0.85rem; margin-top:12px; text-align:center;}
+  .msg.err{color:#b3432f;}
+  .msg.ok{color:var(--earth);}
+
+  .tabs{display:flex; gap:6px; margin-bottom:20px; border-bottom:1px solid var(--line);}
+  .tabs button{
+    background:none; border:none; padding:12px 18px; font-family:var(--body); font-weight:600;
+    font-size:0.9rem; color:#8a8272; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px;
+  }
+  .tabs button.active{color:var(--ink); border-bottom-color:var(--copper);}
+  .tabs button:hover{color:var(--ink);}
+
+  .toolbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;}
+  .toolbar .stats{font-family:var(--mono); font-size:0.85rem; color:#655e4f;}
+  .toolbar .actions{display:flex; gap:10px;}
+  .toolbar .actions button{background:var(--earth); color:#fff; border:none; padding:10px 18px; border-radius:6px; font-weight:600; font-size:0.85rem; cursor:pointer;}
+  .toolbar .actions button:hover{opacity:0.9;}
+  .toolbar .actions button.secondary{background:#fff; color:var(--ink); border:1px solid var(--line);}
+  .toolbar .actions button.publish{background:var(--brass); color:var(--ink);}
+  .toolbar .actions button.publish:hover{opacity:0.9;}
+  .toolbar .actions button.publish:disabled{opacity:0.55; cursor:not-allowed;}
+  .publish-pending-dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--copper); margin-right:6px; vertical-align:middle;}
+  .publish-status{font-family:var(--mono); font-size:0.78rem; color:#8a6d1f; margin-top:8px;}
+  .publish-status.ok{color:var(--earth);}
+  .publish-status.err{color:#b3432f;}
+
+  table{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:0.85rem;}
+  thead{background:var(--porcelain-dim);}
+  th, td{padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:var(--mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; color:#8a8272;}
+  tbody tr:hover{background:#faf7ef;}
+  .items-cell{max-width:280px; font-size:0.8rem; color:#4a453b;}
+  .total-cell{font-family:var(--mono); font-weight:600;}
+  .empty{text-align:center; padding:60px 20px; color:#9a9384;}
+  .loading{text-align:center; padding:60px 20px; color:#9a9384;}
+  .hidden{display:none !important;}
+  .badge{font-family:var(--mono); font-size:0.7rem; padding:2px 8px; border-radius:20px; background:var(--porcelain-dim); color:#655e4f;}
+  .badge.admin{background:rgba(217,164,65,0.2); color:#8a6d1f;}
+  .section{margin-top:8px;}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(26,24,21,0.55); display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; z-index:100;}
+  .modal-overlay.hidden{display:none;}
+  .modal-box{background:#fff; border-radius:12px; max-width:520px; width:100%; padding:0; box-shadow:0 20px 60px rgba(0,0,0,0.25);}
+  .modal-head{display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--line);}
+  .modal-head h2{font-family:var(--display); font-size:1.1rem;}
+  .modal-close{background:none; border:none; font-size:1.4rem; line-height:1; cursor:pointer; color:#8a8272; padding:0 4px;}
+  .modal-close:hover{color:var(--ink);}
+  .modal-body{padding:20px 24px 24px;}
+  .field-row{display:flex; gap:12px;}
+  .field-row .field{flex:1;}
+  .field select{width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font-family:var(--body); font-size:0.9rem; background:#fff;}
+  .field input[type="file"]{width:100%; font-size:0.85rem;}
+
+  .prod-thumb{width:44px; height:44px; border-radius:6px; object-fit:cover; background:var(--porcelain-dim); border:1px solid var(--line);}
+  .prod-thumb-empty{width:44px; height:44px; border-radius:6px; background:var(--porcelain-dim); border:1px solid var(--line);}
+  .row-actions{display:flex; gap:8px;}
+  .row-actions button{background:none; border:1px solid var(--line); border-radius:6px; padding:5px 10px; font-size:0.78rem; font-weight:600; cursor:pointer; color:var(--ink);}
+  .row-actions button:hover{background:var(--porcelain-dim);}
+  .row-actions button.danger{color:#b3432f; border-color:rgba(179,67,47,0.3);}
+  .row-actions button.danger:hover{background:rgba(179,67,47,0.08);}
+  .stock-pill{font-family:var(--mono); font-size:0.7rem; padding:3px 8px; border-radius:20px; background:rgba(76,122,61,0.12); color:var(--earth);}
+  .stock-pill.low{background:rgba(193,101,47,0.12); color:var(--copper);}
+  .stock-pill.out{background:rgba(179,67,47,0.14); color:#b3432f;}
+
+  .variant-row{display:flex; align-items:center; gap:10px; padding:10px; border:1px solid var(--line); border-radius:8px; margin-bottom:10px; background:#fdfcf9;}
+  .variant-row input[type="text"]{flex:1; padding:8px 10px; border:1px solid var(--line); border-radius:6px; font-family:var(--body); font-size:0.85rem;}
+  .variant-row input[type="file"]{max-width:130px; font-size:0.78rem; flex-shrink:0;}
+  .variant-row .prod-thumb, .variant-row .prod-thumb-empty{flex-shrink:0;}
+  .variant-remove-btn{background:none; border:1px solid rgba(179,67,47,0.3); color:#b3432f; border-radius:6px; padding:6px 10px; font-size:0.78rem; font-weight:600; cursor:pointer; flex-shrink:0;}
+  .variant-remove-btn:hover{background:rgba(179,67,47,0.08);}
+  .variant-empty-hint{font-size:0.82rem; color:#9a9384; margin-bottom:10px;}
+  .add-variant-btn{background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:6px; padding:9px 16px; font-size:0.85rem; font-weight:600; cursor:pointer;}
+  .add-variant-btn:hover{background:var(--porcelain-dim);}
+  .variant-count{font-size:0.78rem; color:#8a8272; margin-top:2px;}
+
+  /* ---- category pills ---- */
+  .cat-pill-bar{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .cat-pill{
+    display:flex; align-items:center; gap:7px; background:#fff; border:1px solid var(--line);
+    border-radius:20px; padding:7px 14px 7px 10px; font-size:0.8rem; font-weight:600; color:#655e4f;
+    cursor:pointer; transition:transform .12s ease, box-shadow .12s ease; user-select:none;
+  }
+  .cat-pill:hover{transform:translateY(-1px); box-shadow:0 3px 10px rgba(26,24,21,0.08);}
+  .cat-pill .dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .cat-pill .n{font-family:var(--mono); font-size:0.72rem; opacity:0.75;}
+  .cat-pill.active{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .cat-pill.active .n{color:#e8e2d3; opacity:0.9;}
+
+  /* ---- category-grouped table ---- */
+  .cat-group{margin-bottom:26px;}
+  .cat-group-head{
+    display:flex; align-items:center; gap:10px; padding:10px 4px; margin-bottom:10px;
+    border-left:4px solid var(--copper); padding-left:12px;
+  }
+  .cat-group-head h3{font-family:var(--display); font-size:1rem; font-weight:600; color:var(--ink);}
+  .cat-group-head .cnt{font-family:var(--mono); font-size:0.75rem; color:#9a9384; background:var(--porcelain-dim); padding:2px 9px; border-radius:20px;}
+
+  .cat-badge{
+    display:inline-block; font-size:0.76rem; font-weight:600; padding:3px 10px; border-radius:20px;
+    white-space:nowrap;
+  }
+
+  /* ---- table scroll wrapper (prevents mobile layout breakage) ---- */
+  #tableWrap, #usersTableWrap, #productsTableWrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  #tableWrap table, #usersTableWrap table, #productsTableWrap table{ min-width:640px; }
+
+  /* ==================== MOBILE / SMALL SCREEN ADJUSTMENTS ==================== */
+  @media (max-width: 720px){
+    header{padding:14px 16px; flex-wrap:wrap; gap:8px;}
+    header h1{font-size:0.95rem; line-height:1.3;}
+    header button{padding:7px 12px; font-size:0.8rem; white-space:nowrap;}
+    main{padding:18px 12px;}
+
+    .card{max-width:94%; margin:32px auto; padding:22px;}
+
+    .tabs{overflow-x:auto; -webkit-overflow-scrolling:touch; gap:2px;}
+    .tabs button{padding:10px 12px; font-size:0.82rem; white-space:nowrap; flex-shrink:0;}
+
+    .toolbar{flex-direction:column; align-items:stretch; gap:10px;}
+    .toolbar .actions{flex-wrap:wrap;}
+    .toolbar .actions button{flex:1; min-width:120px;}
+
+    table{font-size:0.78rem;}
+    th, td{padding:9px 10px;}
+    .items-cell{max-width:160px;}
+
+    .modal-overlay{padding:0;}
+    .modal-box{max-width:100%; width:100%; min-height:100vh; border-radius:0;}
+    .modal-head{padding:16px 16px;}
+    .modal-body{padding:16px 16px 24px;}
+
+    .field-row{flex-direction:column; gap:14px;}
+
+    .variant-row{flex-wrap:wrap;}
+    .variant-row input[type="text"]{flex:1 1 100%; order:2;}
+    .variant-row input[type="file"]{max-width:none; flex:1 1 100%; order:3;}
+    .variant-row .prod-thumb, .variant-row .prod-thumb-empty{order:1;}
+    .variant-remove-btn{order:4; width:100%;}
+
+    .cat-pill-bar{gap:6px;}
+    .cat-pill{padding:6px 12px 6px 8px; font-size:0.76rem;}
+  }
+</style>
+</head>
+<body>
+
+<div id="loginView" class="card">
+  <h2>Admin Login</h2>
+  <p>Sign in with your shop owner account to view orders.</p>
+  <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" placeholder="you@example.com"></div>
+  <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" placeholder="Your password"></div>
+  <p style="text-align:right; margin:-8px 0 4px;"><a id="forgotLink" href="#" style="color:var(--copper); font-size:0.82rem; font-weight:600; text-decoration:none;">Forgot password?</a></p>
+  <button class="btn" id="loginBtn">Login</button>
+  <div class="msg" id="loginMsg"></div>
+</div>
+
+<div id="forgotView" class="card hidden">
+  <h2>Reset Password</h2>
+  <p>Enter your admin email and we'll send you a link to reset your password.</p>
+  <div class="field"><label for="forgotEmail">Email</label><input id="forgotEmail" type="email" placeholder="you@example.com"></div>
+  <button class="btn" id="forgotBtn">Send Reset Link</button>
+  <div class="msg" id="forgotMsg"></div>
+  <p style="text-align:center; margin-top:14px;"><a id="backToLoginLink" href="#" style="color:var(--copper); font-size:0.85rem; font-weight:600; text-decoration:none;">Back to Login</a></p>
+</div>
+
+<div id="deniedView" class="card hidden">
+  <h2>Access Denied</h2>
+  <p>This account isn't set up as an admin. Ask the site owner to grant access, or log in with the correct account.</p>
+  <button class="btn" id="logoutFromDenied">Log out</button>
+</div>
+
+<div id="adminView" class="hidden">
+  <header>
+    <h1>Shree Mahalaxmi Electricals — Admin</h1>
+    <button id="logoutBtn">Log out</button>
+  </header>
+  <main>
+    <div class="tabs">
+      <button id="tabOrdersBtn" class="active">Orders</button>
+      <button id="tabUsersBtn">Customers</button>
+      <button id="tabProductsBtn">Products</button>
+    </div>
+
+    <div id="ordersSection" class="section">
+      <div class="toolbar">
+        <div class="stats" id="statsLine">Loading orders…</div>
+        <div class="actions">
+          <button class="secondary" id="refreshBtn">Refresh</button>
+          <button id="exportBtn">Download as Excel</button>
+        </div>
+      </div>
+      <div id="tableWrap">
+        <div class="loading">Loading orders…</div>
+      </div>
+    </div>
+
+    <div id="usersSection" class="section hidden">
+      <div class="toolbar">
+        <div class="stats" id="usersStatsLine">Loading customers…</div>
+        <div class="actions">
+          <button class="secondary" id="refreshUsersBtn">Refresh</button>
+          <button id="exportUsersBtn">Download as Excel</button>
+        </div>
+      </div>
+      <div id="usersTableWrap">
+        <div class="loading">Loading customers…</div>
+      </div>
+    </div>
+
+    <div id="productsSection" class="section hidden">
+      <div class="toolbar">
+        <div class="stats" id="productsStatsLine">Loading products…</div>
+        <div class="actions">
+          <button class="secondary" id="refreshProductsBtn">Refresh</button>
+          <button id="addProductBtn">+ Add Product</button>
+          <button class="publish" id="publishBtn"><span id="publishDot" class="publish-pending-dot hidden"></span>Publish changes</button>
+        </div>
+      </div>
+      <div id="publishStatus" class="publish-status hidden"></div>
+      <div id="catPillBar" class="cat-pill-bar"></div>
+      <div id="productsTableWrap">
+        <div class="loading">Loading products…</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="productModalOverlay" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="productFormTitle">Add Product</h2>
+      <button class="modal-close" id="productModalClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label for="pfName">Product Name</label><input id="pfName" type="text" placeholder="e.g. V-Guard Storage Geyser 15L"></div>
+      <div class="field-row">
+        <div class="field"><label for="pfCategory">Category</label>
+          <select id="pfCategory">
+            <option value="geysers">Geysers & Water Heaters</option>
+            <option value="switches">Switches & Sockets</option>
+            <option value="lighting">Lighting (Indoor & Outdoor)</option>
+            <option value="fans">Ceiling & Table Fans</option>
+            <option value="wires">Electrical Wires & Cables</option>
+            <option value="mcb">MCBs, DBs & Accessories</option>
+            <option value="exhaust">Exhaust Fans</option>
+            <option value="stabilizer">Voltage Stabilizers</option>
+          </select>
+        </div>
+        <div class="field"><label for="pfTag">Spec / Tag</label><input id="pfTag" type="text" placeholder="e.g. 15L, 6A, 1200mm"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="pfPrice">Selling Price (₹)</label><input id="pfPrice" type="number" min="0" placeholder="e.g. 6499"></div>
+        <div class="field"><label for="pfMrp">MRP (₹) — optional, for showing a discount</label><input id="pfMrp" type="number" min="0" placeholder="e.g. 8999"></div>
+      </div>
+      <div class="field"><label for="pfStock">Stock Status</label>
+        <select id="pfStock">
+          <option value="in">In Stock</option>
+          <option value="low">Low Stock</option>
+          <option value="out">Out of Stock</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Colour Variants — optional</label>
+        <div id="pfVariantsList"></div>
+        <button type="button" class="add-variant-btn" id="pfAddVariantBtn">+ Add Colour</button>
+      </div>
+      <div class="field">
+        <label for="pfImage">Product Image — optional</label>
+        <input id="pfImage" type="file" accept="image/*">
+        <div id="pfImagePreviewWrap" style="margin-top:8px; display:none;">
+          <img id="pfImagePreview" alt="Preview" style="max-width:140px; max-height:140px; border-radius:8px; border:1px solid var(--line);">
+          <button type="button" class="secondary" id="pfImageRemove" style="margin-left:10px; padding:6px 12px; font-size:0.8rem;">Remove image</button>
+        </div>
+      </div>
+      <div class="msg" id="productFormMsg"></div>
+      <button class="btn" id="pfSaveBtn">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB1cxu64ya8mglwmEZ34OqsXBfyLA6RYY0",
+  authDomain: "shree-mahalaxmi-electricals.firebaseapp.com",
+  projectId: "shree-mahalaxmi-electricals",
+  storageBucket: "shree-mahalaxmi-electricals.firebasestorage.app",
+  messagingSenderId: "490946177322",
+  appId: "1:490946177322:web:a94055cb9d07d6203e1653"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loginView = document.getElementById('loginView');
+const deniedView = document.getElementById('deniedView');
+const adminView = document.getElementById('adminView');
+const forgotView = document.getElementById('forgotView');
+
+let currentOrders = [];
+let currentUsers = [];
+
+function showOnly(view){
+  [loginView, deniedView, adminView, forgotView].forEach(v => v.classList.add('hidden'));
+  view.classList.remove('hidden');
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ---------------- LOGIN ---------------- */
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const msg = document.getElementById('loginMsg');
+  const btn = document.getElementById('loginBtn');
+  if(!email || !password){ msg.textContent = 'Enter your email and password'; msg.className = 'msg err'; return; }
+  btn.disabled = true; btn.textContent = 'Logging in…';
+  try{
+    await signInWithEmailAndPassword(auth, email, password);
+  }catch(err){
+    console.error(err);
+    msg.textContent = 'Incorrect email or password';
+    msg.className = 'msg err';
+    btn.disabled = false; btn.textContent = 'Login';
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+document.getElementById('logoutFromDenied').addEventListener('click', () => signOut(auth));
+
+document.getElementById('forgotLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value.trim();
+  document.getElementById('forgotMsg').textContent = '';
+  showOnly(forgotView);
+});
+document.getElementById('backToLoginLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  showOnly(loginView);
+});
+document.getElementById('forgotBtn').addEventListener('click', async () => {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const msg = document.getElementById('forgotMsg');
+  const btn = document.getElementById('forgotBtn');
+  if(!email){ msg.textContent = 'Please enter your email'; msg.className = 'msg err'; return; }
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try{
+    await sendPasswordResetEmail(auth, email);
+    msg.textContent = 'Reset link sent! Check your email inbox (and spam folder).';
+    msg.className = 'msg ok';
+  }catch(err){
+    console.error(err);
+    msg.textContent = 'Could not send reset link — check the email and try again.';
+    msg.className = 'msg err';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Send Reset Link';
+  }
+});
+
+onAuthStateChanged(auth, async (user) => {
+  if(!user){ showOnly(loginView); return; }
+
+  let isAdmin = false;
+  try{
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    isAdmin = snap.exists() && snap.data().isAdmin === true;
+  }catch(e){ console.error('Failed to check admin status:', e); }
+
+  if(!isAdmin){ showOnly(deniedView); return; }
+
+  showOnly(adminView);
+  loadOrders();
+  loadUsers();
+  loadProducts();
+});
+
+/* ---------------- TABS ---------------- */
+const ordersSection = document.getElementById('ordersSection');
+const usersSection = document.getElementById('usersSection');
+const productsSection = document.getElementById('productsSection');
+const tabOrdersBtn = document.getElementById('tabOrdersBtn');
+const tabUsersBtn = document.getElementById('tabUsersBtn');
+const tabProductsBtn = document.getElementById('tabProductsBtn');
+
+function showTab(activeBtn, activeSection){
+  [tabOrdersBtn, tabUsersBtn, tabProductsBtn].forEach(b => b.classList.remove('active'));
+  [ordersSection, usersSection, productsSection].forEach(s => s.classList.add('hidden'));
+  activeBtn.classList.add('active');
+  activeSection.classList.remove('hidden');
+}
+tabOrdersBtn.addEventListener('click', () => showTab(tabOrdersBtn, ordersSection));
+tabUsersBtn.addEventListener('click', () => showTab(tabUsersBtn, usersSection));
+tabProductsBtn.addEventListener('click', () => showTab(tabProductsBtn, productsSection));
+
+/* ---------------- ORDERS ---------------- */
+async function loadOrders(){
+  const wrap = document.getElementById('tableWrap');
+  const stats = document.getElementById('statsLine');
+  wrap.innerHTML = '<div class="loading">Loading orders…</div>';
+  try{
+    const snap = await getDocs(collection(db, 'orders'));
+    currentOrders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    currentOrders.sort((a,b) => new Date(b.date) - new Date(a.date));
+    renderOrdersTable();
+  }catch(e){
+    console.error(e);
+    wrap.innerHTML = '<div class="empty">Couldn\'t load orders. Check your Firestore rules and try refreshing.</div>';
+    stats.textContent = '';
+  }
+}
+
+function renderOrdersTable(){
+  const wrap = document.getElementById('tableWrap');
+  const stats = document.getElementById('statsLine');
+  const revenue = currentOrders.reduce((s,o) => s + (o.total || 0), 0);
+  stats.textContent = `${currentOrders.length} order${currentOrders.length===1?'':'s'} · ₹${revenue.toLocaleString('en-IN')} total revenue`;
+
+  if(currentOrders.length === 0){
+    wrap.innerHTML = '<div class="empty">No orders yet.</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th><th>Customer</th><th>Phone</th><th>Address</th>
+          <th>Items</th><th>Coupon</th><th>Discount</th><th>Total</th><th>Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${currentOrders.map(o => `
+          <tr>
+            <td>${o.date ? new Date(o.date).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) : '—'}</td>
+            <td>${escapeHtml(o.name || '—')}</td>
+            <td>${escapeHtml(o.phone || '—')}</td>
+            <td>${escapeHtml(o.address || '—')}</td>
+            <td class="items-cell">${(o.items||[]).map(i => `${escapeHtml(i.name)} × ${i.qty}`).join('<br>')}</td>
+            <td>${o.coupon ? escapeHtml(o.coupon) : '—'}</td>
+            <td>${o.discount ? '₹'+o.discount.toLocaleString('en-IN') : '—'}</td>
+            <td class="total-cell">₹${(o.total||0).toLocaleString('en-IN')}</td>
+            <td>${escapeHtml(o.payment || '—')}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+document.getElementById('refreshBtn').addEventListener('click', loadOrders);
+
+document.getElementById('exportBtn').addEventListener('click', async () => {
+  if(currentOrders.length === 0){ alert('No orders to export yet.'); return; }
+  const btn = document.getElementById('exportBtn');
+  btn.disabled = true; btn.textContent = 'Preparing…';
+  try{
+    if(!window.XLSX){
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    const rows = currentOrders.map(o => ({
+      Date: o.date ? new Date(o.date).toLocaleString('en-IN') : '',
+      Customer: o.name || '',
+      Phone: o.phone || '',
+      Address: o.address || '',
+      Items: (o.items||[]).map(i => `${i.name} x${i.qty}`).join(', '),
+      Coupon: o.coupon || '',
+      Discount: o.discount || 0,
+      Total: o.total || 0,
+      Payment: o.payment || ''
+    }));
+    const ws = window.XLSX.utils.json_to_sheet(rows);
+    const wb = window.XLSX.utils.book_new();
+    window.XLSX.utils.book_append_sheet(wb, ws, 'Orders');
+    const filename = `orders_${new Date().toISOString().slice(0,10)}.xlsx`;
+    window.XLSX.writeFile(wb, filename);
+  }catch(e){
+    console.error(e);
+    alert('Something went wrong preparing the file. Please try again.');
+  }finally{
+    btn.disabled = false; btn.textContent = 'Download as Excel';
+  }
+});
+
+/* ---------------- USERS / CUSTOMERS ---------------- */
+async function loadUsers(){
+  const wrap = document.getElementById('usersTableWrap');
+  const stats = document.getElementById('usersStatsLine');
+  wrap.innerHTML = '<div class="loading">Loading customers…</div>';
+  try{
+    const snap = await getDocs(collection(db, 'users'));
+    currentUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const orderCountByUid = {};
+    currentOrders.forEach(o => {
+      if(o.uid) orderCountByUid[o.uid] = (orderCountByUid[o.uid] || 0) + 1;
+    });
+    currentUsers.forEach(u => { u._orderCount = orderCountByUid[u.id] || 0; });
+    renderUsersTable();
+  }catch(e){
+    console.error(e);
+    wrap.innerHTML = '<div class="empty">Couldn\'t load customers. Check your Firestore rules and try refreshing.</div>';
+    stats.textContent = '';
+  }
+}
+
+function renderUsersTable(){
+  const wrap = document.getElementById('usersTableWrap');
+  const stats = document.getElementById('usersStatsLine');
+  stats.textContent = `${currentUsers.length} registered customer${currentUsers.length===1?'':'s'}`;
+
+  if(currentUsers.length === 0){
+    wrap.innerHTML = '<div class="empty">No registered customers yet.</div>';
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Email</th><th>Phone</th><th>Orders placed</th><th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${currentUsers.map(u => `
+          <tr>
+            <td>${escapeHtml(u.name || '—')}</td>
+            <td>${escapeHtml(u.email || '—')}</td>
+            <td>${escapeHtml(u.phone || '—')}</td>
+            <td>${u._orderCount}</td>
+            <td><span class="badge ${u.isAdmin ? 'admin' : ''}">${u.isAdmin ? 'Admin' : 'Customer'}</span></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+document.getElementById('refreshUsersBtn').addEventListener('click', loadUsers);
+
+document.getElementById('exportUsersBtn').addEventListener('click', async () => {
+  if(currentUsers.length === 0){ alert('No customers to export yet.'); return; }
+  const btn = document.getElementById('exportUsersBtn');
+  btn.disabled = true; btn.textContent = 'Preparing…';
+  try{
+    if(!window.XLSX){
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    const rows = currentUsers.map(u => ({
+      Name: u.name || '',
+      Email: u.email || '',
+      Phone: u.phone || '',
+      'Orders placed': u._orderCount,
+      Role: u.isAdmin ? 'Admin' : 'Customer'
+    }));
+    const ws = window.XLSX.utils.json_to_sheet(rows);
+    const wb = window.XLSX.utils.book_new();
+    window.XLSX.utils.book_append_sheet(wb, ws, 'Customers');
+    const filename = `customers_${new Date().toISOString().slice(0,10)}.xlsx`;
+    window.XLSX.writeFile(wb, filename);
+  }catch(e){
+    console.error(e);
+    alert('Something went wrong preparing the file. Please try again.');
+  }finally{
+    btn.disabled = false; btn.textContent = 'Download as Excel';
+  }
+});
+
+/* ---------------- PRODUCTS ---------------- */
+const CATEGORY_NAMES = {
+  geysers: 'Geysers & Water Heaters',
+  switches: 'Switches & Sockets',
+  lighting: 'Lighting (Indoor & Outdoor)',
+  fans: 'Ceiling & Table Fans',
+  wires: 'Electrical Wires & Cables',
+  mcb: 'MCBs, DBs & Accessories',
+  exhaust: 'Exhaust Fans',
+  stabilizer: 'Voltage Stabilizers'
+};
+
+const CATEGORY_COLORS = {
+  geysers:    { bg:'rgba(193,101,47,0.14)',  fg:'#a3521f' },
+  switches:   { bg:'rgba(62,90,104,0.14)',   fg:'#3e5a68' },
+  lighting:   { bg:'rgba(217,164,65,0.20)',  fg:'#8a6d1f' },
+  fans:       { bg:'rgba(76,122,61,0.14)',   fg:'#3f6633' },
+  wires:      { bg:'rgba(179,67,47,0.12)',   fg:'#b3432f' },
+  mcb:        { bg:'rgba(107,91,158,0.14)',  fg:'#5f4f92' },
+  exhaust:    { bg:'rgba(31,148,148,0.14)',  fg:'#1c7a7a' },
+  stabilizer: { bg:'rgba(199,90,140,0.14)',  fg:'#a5426e' }
+};
+const CATEGORY_ORDER = ['geysers','switches','lighting','fans','wires','mcb','exhaust','stabilizer'];
+
+let currentProducts = [];
+let editingProductId = null; // null = adding a new product
+let pendingImageDataUrl = null; // set once a file is chosen & compressed
+let imageWasRemoved = false;   // true if user removed the existing image on an edit
+let formVariants = [];        // colour variants being edited: [{ name, image }]
+let activeCatFilter = null;    // null = show all categories, grouped
+
+async function loadProducts(){
+  const wrap = document.getElementById('productsTableWrap');
+  const stats = document.getElementById('productsStatsLine');
+  wrap.innerHTML = '<div class="loading">Loading products…</div>';
+  try{
+    const snap = await getDocs(collection(db, 'products'));
+    currentProducts = snap.docs.map(d => d.data());
+    currentProducts.sort((a,b) => (a.id||0) - (b.id||0));
+    renderCatPills();
+    renderProductsTable();
+  }catch(e){
+    console.error(e);
+    wrap.innerHTML = '<div class="empty">Couldn\'t load products. Check your Firestore rules and try refreshing.</div>';
+    stats.textContent = '';
+  }
+}
+
+function renderCatPills(){
+  const bar = document.getElementById('catPillBar');
+  const total = currentProducts.length;
+  const allActive = activeCatFilter === null ? 'active' : '';
+  let html = `<div class="cat-pill ${allActive}" data-cat="__all"><span class="dot" style="background:var(--ink);"></span>All <span class="n">${total}</span></div>`;
+  CATEGORY_ORDER.forEach(catId => {
+    const count = currentProducts.filter(p => p.cat === catId).length;
+    if(count === 0) return;
+    const col = CATEGORY_COLORS[catId] || { bg:'var(--porcelain-dim)', fg:'#655e4f' };
+    const active = activeCatFilter === catId ? 'active' : '';
+    html += `<div class="cat-pill ${active}" data-cat="${catId}"><span class="dot" style="background:${col.fg};"></span>${CATEGORY_NAMES[catId]} <span class="n">${count}</span></div>`;
+  });
+  bar.innerHTML = html;
+  bar.querySelectorAll('.cat-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const cat = pill.dataset.cat;
+      activeCatFilter = cat === '__all' ? null : cat;
+      renderCatPills();
+      renderProductsTable();
+    });
+  });
+}
+
+function productRowHtml(p){
+  const col = CATEGORY_COLORS[p.cat] || { bg:'var(--porcelain-dim)', fg:'#655e4f' };
+  return `
+    <tr>
+      <td>${p.image ? `<img class="prod-thumb" src="${p.image}" alt="${escapeHtml(p.name)}">` : `<div class="prod-thumb-empty"></div>`}</td>
+      <td>${escapeHtml(p.name)}${p.tag ? ` <span style="color:#9a9384; font-size:0.8rem;">(${escapeHtml(p.tag)})</span>` : ''}${p.variants && p.variants.length ? `<div class="variant-count">${p.variants.length} colour${p.variants.length>1?'s':''}</div>` : ''}</td>
+      <td><span class="cat-badge" style="background:${col.bg}; color:${col.fg};">${CATEGORY_NAMES[p.cat] || escapeHtml(p.cat || '—')}</span></td>
+      <td class="total-cell">₹${(p.price||0).toLocaleString('en-IN')}</td>
+      <td>${p.mrp ? '₹'+p.mrp.toLocaleString('en-IN') : '—'}</td>
+      <td><span class="stock-pill ${p.stock==='low'?'low':p.stock==='out'?'out':''}">${p.stock==='low'?'Low Stock':p.stock==='out'?'Out of Stock':'In Stock'}</span></td>
+      <td class="row-actions">
+        <button data-edit="${p.id}">Edit</button>
+        <button class="danger" data-delete="${p.id}">Delete</button>
+      </td>
+    </tr>`;
+}
+
+function productTableHtml(list){
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>${list.map(productRowHtml).join('')}</tbody>
+    </table>`;
+}
+
+function renderProductsTable(){
+  const wrap = document.getElementById('productsTableWrap');
+  const stats = document.getElementById('productsStatsLine');
+  stats.textContent = `${currentProducts.length} product${currentProducts.length===1?'':'s'}`;
+
+  if(currentProducts.length === 0){
+    wrap.innerHTML = '<div class="empty">No products yet. Click "+ Add Product" to add your first one.</div>';
+    return;
+  }
+
+  if(activeCatFilter){
+    // Single category, filtered
+    const list = currentProducts.filter(p => p.cat === activeCatFilter);
+    wrap.innerHTML = list.length
+      ? productTableHtml(list)
+      : `<div class="empty">No products in ${CATEGORY_NAMES[activeCatFilter] || activeCatFilter} yet.</div>`;
+  } else {
+    // Grouped by category, so it's easy to upload/manage category-wise
+    const groupsHtml = CATEGORY_ORDER.map(catId => {
+      const list = currentProducts.filter(p => p.cat === catId);
+      if(list.length === 0) return '';
+      const col = CATEGORY_COLORS[catId] || { fg:'var(--copper)' };
+      return `
+        <div class="cat-group">
+          <div class="cat-group-head" style="border-left-color:${col.fg};">
+            <h3>${CATEGORY_NAMES[catId]}</h3>
+            <span class="cnt">${list.length} product${list.length===1?'':'s'}</span>
+          </div>
+          ${productTableHtml(list)}
+        </div>`;
+    }).join('');
+    const uncategorized = currentProducts.filter(p => !CATEGORY_ORDER.includes(p.cat));
+    const uncatHtml = uncategorized.length ? `
+        <div class="cat-group">
+          <div class="cat-group-head" style="border-left-color:#9a9384;">
+            <h3>Uncategorized</h3>
+            <span class="cnt">${uncategorized.length} product${uncategorized.length===1?'':'s'}</span>
+          </div>
+          ${productTableHtml(uncategorized)}
+        </div>` : '';
+    wrap.innerHTML = groupsHtml + uncatHtml;
+  }
+
+  wrap.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openProductForm(Number(btn.dataset.edit)));
+  });
+  wrap.querySelectorAll('[data-delete]').forEach(btn => {
+    btn.addEventListener('click', () => deleteProduct(Number(btn.dataset.delete)));
+  });
+}
+
+document.getElementById('refreshProductsBtn').addEventListener('click', loadProducts);
+document.getElementById('addProductBtn').addEventListener('click', () => openProductForm(null));
+
+const productModalOverlay = document.getElementById('productModalOverlay');
+const pfImagePreviewWrap = document.getElementById('pfImagePreviewWrap');
+const pfImagePreview = document.getElementById('pfImagePreview');
+
+function openProductForm(id){
+  editingProductId = id;
+  pendingImageDataUrl = null;
+  imageWasRemoved = false;
+  document.getElementById('productFormMsg').textContent = '';
+  document.getElementById('pfImage').value = '';
+
+  const p = id !== null ? currentProducts.find(pr => pr.id === id) : null;
+  document.getElementById('productFormTitle').textContent = p ? 'Edit Product' : 'Add Product';
+  document.getElementById('pfName').value = p ? p.name : '';
+  document.getElementById('pfCategory').value = p ? p.cat : (activeCatFilter || 'geysers');
+  document.getElementById('pfTag').value = p && p.tag ? p.tag : '';
+  document.getElementById('pfPrice').value = p ? p.price : '';
+  document.getElementById('pfMrp').value = p && p.mrp ? p.mrp : '';
+  document.getElementById('pfStock').value = p ? p.stock : 'in';
+
+  if(p && p.variants && p.variants.length){
+    formVariants = p.variants.map(v => ({ name: v.name || '', image: v.image || null }));
+  } else if(p && p.colors && p.colors.length){
+    formVariants = p.colors.map(c => ({ name: c, image: null }));
+  } else {
+    formVariants = [];
+  }
+  renderVariantRows();
+
+  if(p && p.image){
+    pfImagePreview.src = p.image;
+    pfImagePreviewWrap.style.display = 'block';
+  } else {
+    pfImagePreviewWrap.style.display = 'none';
+  }
+
+  productModalOverlay.classList.remove('hidden');
+}
+function closeProductForm(){ productModalOverlay.classList.add('hidden'); }
+document.getElementById('productModalClose').addEventListener('click', closeProductForm);
+productModalOverlay.addEventListener('click', (e) => { if(e.target === productModalOverlay) closeProductForm(); });
+
+document.getElementById('pfImageRemove').addEventListener('click', () => {
+  pendingImageDataUrl = null;
+  imageWasRemoved = true;
+  pfImagePreviewWrap.style.display = 'none';
+  document.getElementById('pfImage').value = '';
+});
+
+// Compress an uploaded image client-side so it stays well under Firestore's 1MB-per-document
+// limit, AND normalize it onto a square canvas (like a passport photo mat) so photos of any
+// shape (wide, tall, square) always show the full product on the site — nothing gets cropped
+// or stretched, it just gets centered with a light background fill.
+function compressImageFile(file, maxDim = 700, quality = 0.72){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = maxDim; canvas.height = maxDim;
+        const ctx = canvas.getContext('2d');
+        // Light background fill (matches the site's product-photo background) so any
+        // letterboxing around a non-square photo blends in instead of showing white/black bars.
+        ctx.fillStyle = '#ece5d4';
+        ctx.fillRect(0, 0, maxDim, maxDim);
+        // Scale the photo to fit fully inside the square (contain, not cover) — this is the
+        // key fix: we never crop the image, we just fit it and center it.
+        const scale = Math.min(maxDim / img.width, maxDim / img.height);
+        const drawW = Math.round(img.width * scale);
+        const drawH = Math.round(img.height * scale);
+        const dx = Math.round((maxDim - drawW) / 2);
+        const dy = Math.round((maxDim - drawH) / 2);
+        ctx.drawImage(img, dx, dy, drawW, drawH);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById('pfImage').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const msg = document.getElementById('productFormMsg');
+  try{
+    let quality = 0.72;
+    let dataUrl = await compressImageFile(file, 700, quality);
+    // If still large, compress harder — keeps the whole product doc safely under 1MB.
+    while(dataUrl.length > 700000 && quality > 0.35){
+      quality -= 0.15;
+      dataUrl = await compressImageFile(file, 700, quality);
+    }
+    pendingImageDataUrl = dataUrl;
+    imageWasRemoved = false;
+    pfImagePreview.src = dataUrl;
+    pfImagePreviewWrap.style.display = 'block';
+    msg.textContent = '';
+  }catch(err){
+    console.error(err);
+    msg.textContent = 'Could not read that image — try a different file.';
+    msg.className = 'msg err';
+  }
+});
+
+/* ---------------- COLOUR VARIANTS (form-local state) ---------------- */
+function renderVariantRows(){
+  const wrap = document.getElementById('pfVariantsList');
+  if(formVariants.length === 0){
+    wrap.innerHTML = '<p class="variant-empty-hint">No colour variants yet — customers will just see the main product image.</p>';
+    return;
+  }
+  wrap.innerHTML = formVariants.map((v, i) => `
+    <div class="variant-row" data-idx="${i}">
+      ${v.image ? `<img class="prod-thumb" src="${v.image}" alt="">` : `<div class="prod-thumb-empty"></div>`}
+      <input type="text" placeholder="Colour name e.g. Black" value="${escapeHtml(v.name)}" data-variant-name="${i}">
+      <input type="file" accept="image/*" data-variant-image="${i}">
+      <button type="button" class="variant-remove-btn" data-variant-remove="${i}">Remove</button>
+    </div>`).join('');
+
+  wrap.querySelectorAll('[data-variant-name]').forEach(inp => {
+    inp.addEventListener('input', () => { formVariants[Number(inp.dataset.variantName)].name = inp.value; });
+  });
+  wrap.querySelectorAll('[data-variant-image]').forEach(inp => {
+    inp.addEventListener('change', async (e) => {
+      const idx = Number(inp.dataset.variantImage);
+      const file = e.target.files[0];
+      if(!file) return;
+      const msg = document.getElementById('productFormMsg');
+      try{
+        let quality = 0.72;
+        let dataUrl = await compressImageFile(file, 700, quality);
+        while(dataUrl.length > 700000 && quality > 0.35){
+          quality -= 0.15;
+          dataUrl = await compressImageFile(file, 700, quality);
+        }
+        formVariants[idx].image = dataUrl;
+        renderVariantRows();
+      }catch(err){
+        console.error(err);
+        msg.textContent = 'Could not read that colour image — try a different file.';
+        msg.className = 'msg err';
+      }
+    });
+  });
+  wrap.querySelectorAll('[data-variant-remove]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      formVariants.splice(Number(btn.dataset.variantRemove), 1);
+      renderVariantRows();
+    });
+  });
+}
+document.getElementById('pfAddVariantBtn').addEventListener('click', () => {
+  formVariants.push({ name: '', image: null });
+  renderVariantRows();
+});
+
+document.getElementById('pfSaveBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('productFormMsg');
+  const btn = document.getElementById('pfSaveBtn');
+  const name = document.getElementById('pfName').value.trim();
+  const cat = document.getElementById('pfCategory').value;
+  const tag = document.getElementById('pfTag').value.trim();
+  const price = Number(document.getElementById('pfPrice').value);
+  const mrpRaw = document.getElementById('pfMrp').value.trim();
+  const mrp = mrpRaw ? Number(mrpRaw) : null;
+  const stock = document.getElementById('pfStock').value;
+  const variants = formVariants
+    .filter(v => v.name.trim() || v.image)
+    .map(v => ({ name: v.name.trim(), image: v.image || null }));
+
+  if(!name){ msg.textContent = 'Please enter a product name'; msg.className = 'msg err'; return; }
+  if(!price || price <= 0){ msg.textContent = 'Please enter a valid price'; msg.className = 'msg err'; return; }
+  if(mrp !== null && mrp <= price){ msg.textContent = 'MRP should be higher than the selling price'; msg.className = 'msg err'; return; }
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try{
+    const existing = editingProductId !== null ? currentProducts.find(pr => pr.id === editingProductId) : null;
+    const id = existing ? existing.id : (currentProducts.reduce((max,p) => Math.max(max, p.id||0), 0) + 1);
+
+    let image = existing ? existing.image : undefined;
+    if(pendingImageDataUrl) image = pendingImageDataUrl;
+    if(imageWasRemoved) image = null;
+
+    const data = { id, cat, name, tag, price, stock };
+    if(mrp !== null) data.mrp = mrp;
+    if(variants.length) data.variants = variants;
+    if(image) data.image = image;
+
+
+    await setDoc(doc(db, 'products', String(id)), data);
+    markPendingPublish();
+    closeProductForm();
+    await loadProducts();
+  }catch(err){
+    console.error(err);
+    msg.textContent = 'Could not save the product. Please try again.';
+    msg.className = 'msg err';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Save Product';
+  }
+});
+
+/* ---------------- PUBLISH TO LIVE SITE (Netlify build hook) ---------------- */
+// Paste the build hook URL from Netlify: Site settings → Build & deploy → Build hooks
+const NETLIFY_BUILD_HOOK_URL = 'https://api.netlify.com/build_hooks/6a587680e9de293f827b13f9';
+
+const PENDING_KEY = 'smePendingPublish';
+
+function markPendingPublish(){
+  localStorage.setItem(PENDING_KEY, '1');
+  updatePublishUI();
+}
+function clearPendingPublish(){
+  localStorage.removeItem(PENDING_KEY);
+  updatePublishUI();
+}
+function updatePublishUI(){
+  const dot = document.getElementById('publishDot');
+  const hasPending = localStorage.getItem(PENDING_KEY) === '1';
+  dot.classList.toggle('hidden', !hasPending);
+}
+updatePublishUI(); // reflect any pending changes left over from a previous session
+
+document.getElementById('publishBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('publishBtn');
+  const status = document.getElementById('publishStatus');
+
+  if(NETLIFY_BUILD_HOOK_URL.includes('PASTE_YOUR_BUILD_HOOK_URL_HERE')){
+    status.textContent = 'Build hook URL not set up yet — see setup instructions.';
+    status.className = 'publish-status err';
+    return;
+  }
+
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = 'Publishing…';
+  status.classList.remove('hidden');
+  status.textContent = 'Requesting a rebuild…';
+  status.className = 'publish-status';
+
+  try{
+    // mode: 'no-cors' — Netlify's build hook endpoint doesn't need to send a
+    // readable response back to browser JS; we just need the POST to land.
+    await fetch(NETLIFY_BUILD_HOOK_URL, { method: 'POST', mode: 'no-cors' });
+    clearPendingPublish();
+    status.textContent = 'Rebuild requested — your live site will update in about a minute.';
+    status.className = 'publish-status ok';
+  }catch(err){
+    console.error(err);
+    status.textContent = 'Could not reach Netlify — check your internet connection and try again.';
+    status.className = 'publish-status err';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+});
+
+async function deleteProduct(id){
+  const p = currentProducts.find(pr => pr.id === id);
+  if(!p) return;
+  if(!confirm(`Delete "${p.name}"? This can't be undone.`)) return;
+  try{
+    await deleteDoc(doc(db, 'products', String(id)));
+    markPendingPublish();
+    await loadProducts();
+  }catch(err){
+    console.error(err);
+    alert('Could not delete the product. Please try again.');
+  }
+}
+</script>
+</body>
+</html>

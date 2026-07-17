@@ -3,6 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3YH7BVSSGC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3YH7BVSSGC');
+</script>
+
 <meta name="google-site-verification" content="dZQz7B0jyjyZeCAQW2iJEfidNIpR1IeurajC7GoKDjk" />
 
 <!-- Primary SEO -->
@@ -1272,10 +1282,19 @@ function saveWishlist(list){ localStorage.setItem(STORE_KEYS.wishlist, JSON.stri
 function isWishlisted(id){ return getWishlist().includes(id); }
 function toggleWishlist(id){
   let list = getWishlist();
+  const adding = !list.includes(id);
   if(list.includes(id)) list = list.filter(i => i !== id);
   else list.push(id);
   saveWishlist(list);
   updateWishlistCount();
+  if(typeof gtag === 'function'){
+    const p = products.find(pr => pr.id === id);
+    gtag('event', adding ? 'add_to_wishlist' : 'remove_from_wishlist', {
+      currency: 'INR',
+      value: p ? p.price : 0,
+      items: p ? [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: p.price }] : []
+    });
+  }
 }
 function updateWishlistCount(){
   document.getElementById('wishlistCount').textContent = getWishlist().length;
@@ -1339,6 +1358,9 @@ function renderCategories(){
       document.getElementById('mobileSearchInput').value = "";
       renderCategories();
       renderProducts();
+      if(typeof gtag === 'function' && activeCategory){
+        gtag('event', 'select_content', { content_type: 'category', item_id: activeCategory });
+      }
     });
   });
 }
@@ -1464,9 +1486,19 @@ document.getElementById('clearFilters').addEventListener('click', () => {
   renderCategories(); renderProducts();
 });
 
+let gaSearchTimer;
+function trackSearchDebounced(term){
+  clearTimeout(gaSearchTimer);
+  if(!term) return;
+  gaSearchTimer = setTimeout(() => {
+    if(typeof gtag === 'function') gtag('event', 'search', { search_term: term });
+  }, 800);
+}
+
 document.getElementById('searchInput').addEventListener('input', (e) => {
   searchTerm = e.target.value;
   renderProducts();
+  trackSearchDebounced(searchTerm);
 });
 
 /* ---------------- CART LOGIC ---------------- */
@@ -1476,6 +1508,16 @@ function addToCart(id){
   updateCartUI();
   renderProducts();
   showToast('Added to cart');
+  if(typeof gtag === 'function'){
+    const p = products.find(pr => pr.id === id);
+    if(p){
+      gtag('event', 'add_to_cart', {
+        currency: 'INR',
+        value: p.price,
+        items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: p.price, quantity: 1 }]
+      });
+    }
+  }
 }
 function changeQty(id, delta){
   if(!cart[id]) return;
@@ -1486,10 +1528,19 @@ function changeQty(id, delta){
   renderProducts();
 }
 function removeFromCart(id){
+  const p = products.find(pr => pr.id === id);
+  const qty = cart[id] || 0;
   delete cart[id];
   persistCart();
   updateCartUI();
   renderProducts();
+  if(typeof gtag === 'function' && p){
+    gtag('event', 'remove_from_cart', {
+      currency: 'INR',
+      value: p.price * qty,
+      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: p.price, quantity: qty }]
+    });
+  }
 }
 const DELIVERY_CHARGE = 200;
 const COUPONS = {
@@ -1599,6 +1650,9 @@ document.getElementById('couponApply').addEventListener('click', () => {
     appliedCoupon = code;
     msgEl.textContent = `Applied — ${c.label}`;
     msgEl.className = 'coupon-msg ok';
+    if(typeof gtag === 'function'){
+      gtag('event', 'apply_coupon', { coupon: code, value: cartTotal() });
+    }
   }
   updateCartUI();
 });
@@ -1764,6 +1818,7 @@ mobileSearchInput.addEventListener('input', (e) => {
   searchTerm = e.target.value;
   document.getElementById('searchInput').value = e.target.value;
   renderProducts();
+  trackSearchDebounced(searchTerm);
 });
 document.getElementById('clearFilters').addEventListener('click', () => {
   mobileSearchInput.value = "";
@@ -1798,6 +1853,13 @@ function closeModal(){ modalOverlay.classList.remove('open'); }
 document.getElementById('checkoutBtn').addEventListener('click', () => {
   if(cartCount() === 0) return;
   openModal();
+  if(typeof gtag === 'function'){
+    const items = validCartEntries().map(([id, qty]) => {
+      const p = products.find(pr => pr.id === Number(id));
+      return { item_id: String(id), item_name: p ? p.name : id, item_category: p ? p.cat : '', price: p ? p.price : 0, quantity: qty };
+    });
+    gtag('event', 'begin_checkout', { currency: 'INR', value: cartTotal(), items });
+  }
 });
 document.getElementById('modalCancel').addEventListener('click', closeModal);
 
@@ -1915,6 +1977,17 @@ Total: ₹${finalTotal().toLocaleString('en-IN')}`;
   window.open(url, '_blank');
   closeModal();
   closeDrawer();
+
+  if(typeof gtag === 'function'){
+    gtag('event', 'purchase', {
+      transaction_id: `SME-${Date.now()}`,
+      currency: 'INR',
+      value: finalTotal(),
+      shipping: DELIVERY_CHARGE,
+      coupon: appliedCoupon || undefined,
+      items: orderItems.map(i => ({ item_id: String(i.id), item_name: i.name, price: i.price, quantity: i.qty }))
+    });
+  }
 
   showThankYou({ name, items: orderItems, coupon: appliedCoupon, discount, total: finalTotal(), waUrl: url });
 
@@ -2317,6 +2390,9 @@ Comment: ${comment || '(no comment)'}`;
   window.open(url, '_blank');
   closeFeedbackModal();
   showToast('Thanks for your feedback!');
+  if(typeof gtag === 'function'){
+    gtag('event', 'feedback_submitted', { rating: fbSelectedStar });
+  }
 });
 
 /* ---------------- TOAST ---------------- */
